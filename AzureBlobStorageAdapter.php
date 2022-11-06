@@ -72,7 +72,7 @@ class AzureBlobStorageAdapter implements FilesystemAdapter, PublicUrlGenerator, 
         $this->mimeTypeDetector = $mimeTypeDetector ?? new FinfoMimeTypeDetector();
     }
 
-    public function copy(string $source, string $destination, Config $config): void
+    public function copy($source, $destination): void
     {
         $resolvedDestination = $this->prefixer->prefixPath($destination);
         $resolvedSource = $this->prefixer->prefixPath($source);
@@ -89,7 +89,7 @@ class AzureBlobStorageAdapter implements FilesystemAdapter, PublicUrlGenerator, 
         }
     }
 
-    public function delete(string $path): void
+    public function delete($path): void
     {
         $location = $this->prefixer->prefixPath($path);
 
@@ -104,14 +104,14 @@ class AzureBlobStorageAdapter implements FilesystemAdapter, PublicUrlGenerator, 
         }
     }
 
-    public function read(string $path): string
+    public function read($path): string
     {
         $response = $this->readStream($path);
 
         return stream_get_contents($response);
     }
 
-    public function readStream(string $path)
+    public function readStream($path)
     {
         $location = $this->prefixer->prefixPath($path);
 
@@ -124,7 +124,7 @@ class AzureBlobStorageAdapter implements FilesystemAdapter, PublicUrlGenerator, 
         }
     }
 
-    public function listContents(string $path, bool $deep = false): iterable
+    public function listContents($path = '', $deep = false): iterable
     {
         $resolved = $this->prefixer->prefixDirectoryPath($path);
 
@@ -214,7 +214,7 @@ class AzureBlobStorageAdapter implements FilesystemAdapter, PublicUrlGenerator, 
         // this is not supported by Azure
     }
 
-    public function setVisibility(string $path, string $visibility): void
+    public function setVisibility($path, $visibility): void
     {
         if ($this->visibilityHandling === self::ON_VISIBILITY_THROW_ERROR) {
             throw UnableToSetVisibility::atLocation($path, 'Azure does not support this operation.');
@@ -263,12 +263,12 @@ class AzureBlobStorageAdapter implements FilesystemAdapter, PublicUrlGenerator, 
         }
     }
 
-    public function write(string $path, string $contents, Config $config): void
+    public function write($path, $contents, Config $config): void
     {
         $this->upload($path, $contents, $config);
     }
 
-    public function writeStream(string $path, $contents, Config $config): void
+    public function writeStream($path, $contents, Config $config): void
     {
         $this->upload($path, $contents, $config);
     }
